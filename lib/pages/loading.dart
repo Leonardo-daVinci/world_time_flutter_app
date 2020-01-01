@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:world_time/services/worldTime.dart';
 
 class Loading extends StatefulWidget {
@@ -7,14 +8,16 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-
-  String time ='loading';
   void setupWorldTime() async{
     WorldTime instance = WorldTime(location: 'Kolkata', flag: 'india.png', url: 'Asia/Kolkata');
     await instance.getTime();
-    setState(() {
-      time = instance.time;
+    Navigator.pushReplacementNamed(context, '/home', arguments: {
+      'location': instance.location,
+      'flag': instance.flag,
+      'time': instance.time,
+      'isDaytime': instance.isDaytime,
     });
+    // pushReplacementNamed doesn't let loading page to be sitting under the home page in the stack
   }
 
   @override
@@ -26,7 +29,13 @@ class _LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text('$time'),
+        backgroundColor: Colors.blue[800],
+        body: Center(
+          child: SpinKitChasingDots(
+            color: Colors.amber,
+            size: 50,
+          ),
+        )
     );
   }
 }
